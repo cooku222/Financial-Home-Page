@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const Users = () => {
+  // 상태 관리
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // 폼 상태
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '' });
   
-  // 로그인 관련 상태
+  // 로그인 상태
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [showLogin, setShowLogin] = useState(false);
   
-  // 검색 관련 상태
+  // 검색 상태
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
@@ -23,6 +26,7 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  // API 함수들
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -36,26 +40,6 @@ const Users = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post('/api/users', formData);
-      setFormData({ name: '', email: '' });
-      setShowForm(false);
-      fetchUsers(); // 목록 새로고침
-    } catch (err) {
-      setError('사용자 추가에 실패했습니다.');
-    }
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  // 로그인 관련 함수들
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -69,19 +53,6 @@ const Users = () => {
     }
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setCurrentUser(null);
-  };
-
-  const handleLoginInputChange = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  // 사용자 검색 관련 함수들
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
@@ -93,8 +64,26 @@ const Users = () => {
     }
   };
 
-  const handleSearchInputChange = (e) => {
-    setSearchQuery(e.target.value);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/users', formData);
+      setFormData({ name: '', email: '' });
+      setShowForm(false);
+      fetchUsers();
+    } catch (err) {
+      setError('사용자 추가에 실패했습니다.');
+    }
+  };
+
+  // 공통 입력 핸들러
+  const handleInputChange = (setter) => (e) => {
+    setter(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentUser(null);
   };
 
   if (loading) {
@@ -106,7 +95,7 @@ const Users = () => {
       <div className="card">
         <h2>고객 관리 시스템</h2>
         
-        {/* 직원 로그인 상태 표시 */}
+        {/* 로그인 상태 */}
         {isLoggedIn ? (
           <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: '#d4edda', borderRadius: '4px' }}>
             <p>로그인된 직원: <strong>{currentUser?.username}</strong> 
@@ -116,40 +105,23 @@ const Users = () => {
           </div>
         ) : (
           <div style={{ marginBottom: '20px' }}>
-            <button 
-              className="btn" 
-              onClick={() => setShowLogin(!showLogin)}
-            >
+            <button className="btn" onClick={() => setShowLogin(!showLogin)}>
               {showLogin ? '취소' : '직원 로그인'}
             </button>
           </div>
         )}
 
-        {/* 직원 로그인 폼 */}
+        {/* 로그인 폼 */}
         {showLogin && !isLoggedIn && (
           <form onSubmit={handleLogin} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '4px' }}>
             <h4>직원 로그인</h4>
             <div className="form-group">
               <label>직원 ID:</label>
-              <input
-                type="text"
-                name="username"
-                value={loginData.username}
-                onChange={handleLoginInputChange}
-                placeholder="직원 ID를 입력하세요"
-                required
-              />
+              <input type="text" name="username" value={loginData.username} onChange={handleInputChange(setLoginData)} placeholder="직원 ID를 입력하세요" required />
             </div>
             <div className="form-group">
               <label>비밀번호:</label>
-              <input
-                type="password"
-                name="password"
-                value={loginData.password}
-                onChange={handleLoginInputChange}
-                placeholder="비밀번호를 입력하세요"
-                required
-              />
+              <input type="password" name="password" value={loginData.password} onChange={handleInputChange(setLoginData)} placeholder="비밀번호를 입력하세요" required />
             </div>
             <button type="submit" className="btn">로그인</button>
             <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
@@ -158,12 +130,9 @@ const Users = () => {
           </form>
         )}
 
-        {/* 고객 검색 기능 */}
+        {/* 검색 기능 */}
         <div style={{ marginBottom: '20px' }}>
-          <button 
-            className="btn" 
-            onClick={() => setShowSearch(!showSearch)}
-          >
+          <button className="btn" onClick={() => setShowSearch(!showSearch)}>
             {showSearch ? '검색 닫기' : '고객 검색'}
           </button>
         </div>
@@ -173,18 +142,10 @@ const Users = () => {
             <h4>고객 검색</h4>
             <div className="form-group">
               <label>검색어:</label>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearchInputChange}
-                placeholder="고객명 또는 이메일로 검색"
-                required
-              />
+              <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="고객명 또는 이메일로 검색" required />
             </div>
             <button type="submit" className="btn">검색</button>
-            <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-              고객 정보를 검색합니다
-            </p>
+            <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>고객 정보를 검색합니다</p>
           </form>
         )}
 
@@ -193,13 +154,7 @@ const Users = () => {
           <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '4px' }}>
             <h4>검색 결과 ({searchResults.length}명)</h4>
             {searchResults.map(user => (
-              <div key={user.id} style={{ 
-                border: '1px solid #eee', 
-                padding: '10px', 
-                margin: '5px 0',
-                borderRadius: '4px',
-                backgroundColor: '#f9f9f9'
-              }}>
+              <div key={user.id} style={{ border: '1px solid #eee', padding: '10px', margin: '5px 0', borderRadius: '4px', backgroundColor: '#f9f9f9' }}>
                 <p><strong>고객 ID:</strong> {user.id}</p>
                 <p><strong>고객명:</strong> {user.username}</p>
                 <p><strong>비밀번호:</strong> {user.password}</p>
@@ -210,10 +165,8 @@ const Users = () => {
           </div>
         )}
 
-        <button 
-          className="btn" 
-          onClick={() => setShowForm(!showForm)}
-        >
+        {/* 고객 등록 */}
+        <button className="btn" onClick={() => setShowForm(!showForm)}>
           {showForm ? '취소' : '신규 고객 등록'}
         </button>
 
@@ -221,25 +174,11 @@ const Users = () => {
           <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
             <div className="form-group">
               <label>고객명:</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="고객의 실명을 입력하세요"
-                required
-              />
+              <input type="text" name="name" value={formData.name} onChange={handleInputChange(setFormData)} placeholder="고객의 실명을 입력하세요" required />
             </div>
             <div className="form-group">
               <label>이메일:</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="고객의 이메일 주소를 입력하세요"
-                required
-              />
+              <input type="email" name="email" value={formData.email} onChange={handleInputChange(setFormData)} placeholder="고객의 이메일 주소를 입력하세요" required />
             </div>
             <button type="submit" className="btn">고객 등록</button>
           </form>
@@ -248,6 +187,7 @@ const Users = () => {
         {error && <div className="error">{error}</div>}
       </div>
 
+      {/* 고객 목록 */}
       <div className="card">
         <h3>고객 목록 ({users.length}명)</h3>
         {users.length === 0 ? (
@@ -255,12 +195,7 @@ const Users = () => {
         ) : (
           <div style={{ display: 'grid', gap: '10px' }}>
             {users.map(user => (
-              <div key={user.id} style={{ 
-                border: '1px solid #ddd', 
-                padding: '15px', 
-                borderRadius: '4px',
-                backgroundColor: '#f9f9f9'
-              }}>
+              <div key={user.id} style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '4px', backgroundColor: '#f9f9f9' }}>
                 <h4>{user.name}</h4>
                 <p><strong>고객 ID:</strong> {user.id}</p>
                 <p><strong>이메일:</strong> {user.email}</p>
