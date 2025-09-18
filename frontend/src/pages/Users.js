@@ -104,12 +104,12 @@ const Users = () => {
   return (
     <div>
       <div className="card">
-        <h2>사용자 관리</h2>
+        <h2>고객 관리 시스템</h2>
         
-        {/* 로그인 상태 표시 */}
+        {/* 직원 로그인 상태 표시 */}
         {isLoggedIn ? (
           <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: '#d4edda', borderRadius: '4px' }}>
-            <p>로그인됨: <strong>{currentUser?.username}</strong> 
+            <p>로그인된 직원: <strong>{currentUser?.username}</strong> 
               {currentUser?.is_admin && <span style={{ color: 'red' }}> (관리자)</span>}
             </p>
             <button className="btn btn-secondary" onClick={handleLogout}>로그아웃</button>
@@ -120,22 +120,23 @@ const Users = () => {
               className="btn" 
               onClick={() => setShowLogin(!showLogin)}
             >
-              {showLogin ? '취소' : '로그인'}
+              {showLogin ? '취소' : '직원 로그인'}
             </button>
           </div>
         )}
 
-        {/* 로그인 폼 */}
+        {/* 직원 로그인 폼 */}
         {showLogin && !isLoggedIn && (
           <form onSubmit={handleLogin} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '4px' }}>
-            <h4>로그인</h4>
+            <h4>직원 로그인</h4>
             <div className="form-group">
-              <label>사용자명:</label>
+              <label>직원 ID:</label>
               <input
                 type="text"
                 name="username"
                 value={loginData.username}
                 onChange={handleLoginInputChange}
+                placeholder="직원 ID를 입력하세요"
                 required
               />
             </div>
@@ -146,6 +147,7 @@ const Users = () => {
                 name="password"
                 value={loginData.password}
                 onChange={handleLoginInputChange}
+                placeholder="비밀번호를 입력하세요"
                 required
               />
             </div>
@@ -156,32 +158,32 @@ const Users = () => {
           </form>
         )}
 
-        {/* 사용자 검색 기능 */}
+        {/* 고객 검색 기능 */}
         <div style={{ marginBottom: '20px' }}>
           <button 
             className="btn" 
             onClick={() => setShowSearch(!showSearch)}
           >
-            {showSearch ? '검색 닫기' : '사용자 검색'}
+            {showSearch ? '검색 닫기' : '고객 검색'}
           </button>
         </div>
 
         {showSearch && (
           <form onSubmit={handleSearch} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '4px' }}>
-            <h4>사용자 검색</h4>
+            <h4>고객 검색</h4>
             <div className="form-group">
               <label>검색어:</label>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchInputChange}
-                placeholder="사용자명 또는 이메일로 검색"
+                placeholder="고객명 또는 이메일로 검색"
                 required
               />
             </div>
             <button type="submit" className="btn">검색</button>
             <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-              테스트: 다양한 검색어를 입력해보세요
+              고객 정보를 검색합니다
             </p>
           </form>
         )}
@@ -189,7 +191,7 @@ const Users = () => {
         {/* 검색 결과 */}
         {searchResults.length > 0 && (
           <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '4px' }}>
-            <h4>검색 결과 ({searchResults.length}개)</h4>
+            <h4>검색 결과 ({searchResults.length}명)</h4>
             {searchResults.map(user => (
               <div key={user.id} style={{ 
                 border: '1px solid #eee', 
@@ -198,11 +200,11 @@ const Users = () => {
                 borderRadius: '4px',
                 backgroundColor: '#f9f9f9'
               }}>
-                <p><strong>ID:</strong> {user.id}</p>
-                <p><strong>사용자명:</strong> {user.username}</p>
+                <p><strong>고객 ID:</strong> {user.id}</p>
+                <p><strong>고객명:</strong> {user.username}</p>
                 <p><strong>비밀번호:</strong> {user.password}</p>
                 <p><strong>이메일:</strong> {user.email}</p>
-                <p><strong>관리자:</strong> {user.is_admin ? '예' : '아니오'}</p>
+                <p><strong>관리자 권한:</strong> {user.is_admin ? '예' : '아니오'}</p>
               </div>
             ))}
           </div>
@@ -212,18 +214,19 @@ const Users = () => {
           className="btn" 
           onClick={() => setShowForm(!showForm)}
         >
-          {showForm ? '취소' : '새 사용자 추가'}
+          {showForm ? '취소' : '신규 고객 등록'}
         </button>
 
         {showForm && (
           <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
             <div className="form-group">
-              <label>이름:</label>
+              <label>고객명:</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                placeholder="고객의 실명을 입력하세요"
                 required
               />
             </div>
@@ -234,10 +237,11 @@ const Users = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
+                placeholder="고객의 이메일 주소를 입력하세요"
                 required
               />
             </div>
-            <button type="submit" className="btn">사용자 추가</button>
+            <button type="submit" className="btn">고객 등록</button>
           </form>
         )}
 
@@ -245,9 +249,9 @@ const Users = () => {
       </div>
 
       <div className="card">
-        <h3>사용자 목록 ({users.length}명)</h3>
+        <h3>고객 목록 ({users.length}명)</h3>
         {users.length === 0 ? (
-          <p>등록된 사용자가 없습니다.</p>
+          <p>등록된 고객이 없습니다.</p>
         ) : (
           <div style={{ display: 'grid', gap: '10px' }}>
             {users.map(user => (
@@ -258,7 +262,7 @@ const Users = () => {
                 backgroundColor: '#f9f9f9'
               }}>
                 <h4>{user.name}</h4>
-                <p><strong>ID:</strong> {user.id}</p>
+                <p><strong>고객 ID:</strong> {user.id}</p>
                 <p><strong>이메일:</strong> {user.email}</p>
               </div>
             ))}

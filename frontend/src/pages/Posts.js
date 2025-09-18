@@ -103,52 +103,52 @@ const Posts = () => {
   return (
     <div>
       <div className="card">
-        <h2>게시글 관리</h2>
+        <h2>거래 내역 관리</h2>
         
-        {/* 댓글 시스템 */}
+        {/* 거래 메모 시스템 */}
         <div style={{ marginBottom: '20px' }}>
           <button 
             className="btn" 
             onClick={() => setShowCommentForm(!showCommentForm)}
           >
-            {showCommentForm ? '댓글 닫기' : '댓글 작성'}
+            {showCommentForm ? '메모 닫기' : '거래 메모 작성'}
           </button>
         </div>
 
         {showCommentForm && (
           <form onSubmit={handleCommentSubmit} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '4px' }}>
-            <h4>댓글 작성</h4>
+            <h4>거래 메모 작성</h4>
             <div className="form-group">
-              <label>댓글:</label>
+              <label>메모 내용:</label>
               <textarea
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                placeholder="댓글을 입력하세요..."
+                placeholder="거래에 대한 메모를 입력하세요..."
                 required
               />
             </div>
-            <button type="submit" className="btn">댓글 작성</button>
+            <button type="submit" className="btn">메모 저장</button>
             <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-              다양한 댓글을 작성해보세요
+              거래에 대한 상세 메모를 작성합니다
             </p>
           </form>
         )}
 
-        {/* 파일 업로드 */}
+        {/* 문서 업로드 */}
         <div style={{ marginBottom: '20px' }}>
           <button 
             className="btn" 
             onClick={() => setShowFileUpload(!showFileUpload)}
           >
-            {showFileUpload ? '업로드 닫기' : '파일 업로드'}
+            {showFileUpload ? '업로드 닫기' : '문서 업로드'}
           </button>
         </div>
 
         {showFileUpload && (
           <form onSubmit={handleFileUpload} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '4px' }}>
-            <h4>파일 업로드</h4>
+            <h4>거래 관련 문서 업로드</h4>
             <div className="form-group">
-              <label>파일 선택:</label>
+              <label>문서 선택:</label>
               <input
                 type="file"
                 onChange={handleFileChange}
@@ -158,7 +158,7 @@ const Posts = () => {
             <button type="submit" className="btn">업로드</button>
             {uploadStatus && <p style={{ color: 'green', marginTop: '10px' }}>{uploadStatus}</p>}
             <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-              다양한 파일을 업로드해보세요
+              거래 관련 서류를 업로드합니다
             </p>
           </form>
         )}
@@ -167,41 +167,44 @@ const Posts = () => {
           className="btn" 
           onClick={() => setShowForm(!showForm)}
         >
-          {showForm ? '취소' : '새 게시글 작성'}
+          {showForm ? '취소' : '새 거래 등록'}
         </button>
 
         {showForm && (
           <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
             <div className="form-group">
-              <label>제목:</label>
+              <label>거래 제목:</label>
               <input
                 type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
+                placeholder="거래의 제목을 입력하세요"
                 required
               />
             </div>
             <div className="form-group">
-              <label>작성자:</label>
+              <label>처리 직원:</label>
               <input
                 type="text"
                 name="author"
                 value={formData.author}
                 onChange={handleInputChange}
+                placeholder="거래를 처리한 직원명"
                 required
               />
             </div>
             <div className="form-group">
-              <label>내용:</label>
+              <label>거래 내용:</label>
               <textarea
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
+                placeholder="거래의 상세 내용을 입력하세요"
                 required
               />
             </div>
-            <button type="submit" className="btn">게시글 작성</button>
+            <button type="submit" className="btn">거래 등록</button>
           </form>
         )}
 
@@ -209,9 +212,9 @@ const Posts = () => {
       </div>
 
       <div className="card">
-        <h3>게시글 목록 ({posts.length}개)</h3>
+        <h3>거래 내역 ({posts.length}건)</h3>
         {posts.length === 0 ? (
-          <p>작성된 게시글이 없습니다.</p>
+          <p>등록된 거래가 없습니다.</p>
         ) : (
           <div style={{ display: 'grid', gap: '15px' }}>
             {posts.map(post => (
@@ -222,8 +225,8 @@ const Posts = () => {
                 backgroundColor: '#f9f9f9'
               }}>
                 <h4>{post.title}</h4>
-                <p><strong>작성자:</strong> {post.author}</p>
-                <p><strong>ID:</strong> {post.id}</p>
+                <p><strong>처리 직원:</strong> {post.author}</p>
+                <p><strong>거래 ID:</strong> {post.id}</p>
                 <div style={{ 
                   marginTop: '10px', 
                   padding: '10px', 
