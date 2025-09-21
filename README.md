@@ -71,11 +71,6 @@ Financial-Home-Page/
 │   ├── tests/               # E2E 테스트
 │   ├── .storybook/          # Storybook 설정
 │   └── README.md            # 프론트엔드 문서
-├── backend/                 # Flask 백엔드 (레거시)
-│   ├── app.py
-│   ├── requirements.txt
-│   └── package.json
-├── frontend-old/            # 기존 React 앱 (백업)
 └── README.md               # 프로젝트 전체 문서
 ```
 
